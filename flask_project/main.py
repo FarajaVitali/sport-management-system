@@ -1,13 +1,11 @@
-from flask import Flask, redirect, session, flash,render_template
+from flask import Flask, redirect, session, flash, render_template
 import mysql.connector
 
 app = Flask(__name__)
-app.secret_key = "secret"
-
 def db_connect():
     return mysql.connector.connect(
         host="localhost",
-        username="admin",
+        user="admin",
         password="1234",
         database="test"
     )
@@ -19,14 +17,12 @@ def show_user():
     cursor.execute("SELECT * FROM users")
     data = cursor.fetchall()
     cursor.close()
+    db.close()
 
-    return render_template("admin.html",users=data)
+    return render_template("admin.html", users=data)
 
 @app.route("/admin/allow/<int:user_id>", methods=["POST"])
 def allow_user(user_id):
-    if not session.get("is_admin"):
-        return "Unauthorized", 403
-
     db = db_connect()
     cursor = db.cursor()
     cursor.execute("SELECT id FROM users WHERE id = %s", (user_id,))
@@ -34,12 +30,14 @@ def allow_user(user_id):
 
     if not user:
         cursor.close()
+        db.close()
         flash("User not found", "danger")
         return redirect("/admin")
 
     cursor.execute("UPDATE users SET status = %s WHERE id = %s", ("active", user_id))
-    mysql.connection.commit()
+    db.commit()
     cursor.close()
+    db.close()
 
     flash("User allowed successfully", "success")
     return redirect("/admin")
@@ -47,9 +45,6 @@ def allow_user(user_id):
 
 @app.route("/admin/ban/<int:user_id>", methods=["POST"])
 def ban_user(user_id):
-    if not session.get("is_admin"):
-        return "Unauthorized", 403
-
     db = db_connect()
     cursor = db.cursor()
     cursor.execute("SELECT id FROM users WHERE id = %s", (user_id,))
@@ -57,12 +52,14 @@ def ban_user(user_id):
 
     if not user:
         cursor.close()
+        db.close()
         flash("User not found", "danger")
         return redirect("/admin")
 
     cursor.execute("UPDATE users SET status = %s WHERE id = %s", ("banned", user_id))
-    mysql.connection.commit()
+    db.commit()
     cursor.close()
+    db.close()
 
     flash("User banned successfully", "success")
     return redirect("/admin")
