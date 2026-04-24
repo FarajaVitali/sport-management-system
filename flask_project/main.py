@@ -12,14 +12,13 @@ def db_connect():
 
 @app.route("/admin")
 def show_user():
-    db = db_connect()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users")
-    data = cursor.fetchall()
-    cursor.close()
-    db.close()
-
-    return render_template("admin.html", users=data)
+    # db = db_connect()
+    # cursor = db.cursor(dictionary=True)
+    # cursor.execute("SELECT * FROM users")
+    # data = cursor.fetchall()
+    # cursor.close()
+    # db.close()
+    return render_template("admin/admin_create_sport.html")
 
 @app.route("/admin/allow/<int:user_id>", methods=["POST"])
 def allow_user(user_id):
