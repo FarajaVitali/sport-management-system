@@ -18,7 +18,7 @@ def show_user():
     # data = cursor.fetchall()
     # cursor.close()
     # db.close()
-    return render_template("admin/admin_create_sport.html")
+    return render_template("admin/create_teams.html")
 
 @app.route("/admin/allow/<int:user_id>", methods=["POST"])
 def allow_user(user_id):
