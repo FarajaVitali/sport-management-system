@@ -4,58 +4,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../icons-1.13.1/font/bootstrap-icons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>REGISTER PAGE</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .register-card {
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+        .form-control:focus, .form-check-input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container d-flex vh-100 justify-content-center align-items-center">
-        <div class="col-md-6 row-mt-3">
-            <form class="border p-4" action="/register" method="post">
-                <h3 class="text-center fw-bold">REGISTER HERE</h3>
-                <div class="names row md-2">
-                    <div class="col">
-                        <label for="first_name" class="form-label">First Name:</label>
-                        <input type="text" class="form-control" id="first_name" name="fname" required>
-                    </div>
-                    <div class="col">
-                        <label for="last_name" class="form-label">First Name:</label>
-                        <input type="text" id="last_name" class="form-control" name="fname" required>
-                    </div>
-                </div>
-                <div class="email">
-                    <label for="email" class="form-label">Email:</label>
-                    <input type="email" id="email" class="form-control" name="email" required>
-                </div>
-                <div class="password">
-                    <label for="password" class="form-label">Password:</label>
-                    <input type="password" class="form-control" name="passwd">
-                </div>
-                <div class="confirm">
-                    <label for="confirm_password" class="form-label">Confirm Password:</label>
-                    <input type="password" class="form-control" name="c_passwd">
-                </div>
-                <label for="roles">Select Roles:</label>
-                <div class="form-check">
-                    <input type="radio" class="form-check-input" name="roles" value="Coach">
-                    <label for="roles" class="form-check-label">Coach</label>
-                </div>
-                <div class="form-check">
-                    <label for="roles" class="form-check-label">Player</label>
-                    <input type="radio" class="form-check-input" name="roles" value="Player" required>
-                </div>
-                <input type="submit" class="mt-3 btn btn-primary form-control" value="Register" required>
+    <div class="container d-flex justify-content-center align-items-center py-5 min-vh-100">
+        <div class="col-10 col-sm-8 col-md-7 col-lg-5">
+            
+            <div class="card register-card border-0 shadow-lg p-4 p-sm-5">
+                <form action="{{ route('register') }}" method="post">
+                    @csrf
 
-                <p class="text-center">already registered? <a href="#">login here</a></p>
-            </form>
+                    <div class="text-center mb-2">
+                        <h3 class="fw-bold text-dark mb-1">Create Account</h3>
+                        <p class="text-muted small">Join the sports portal team management system</p>
+                    </div>
+
+                    @if($errors->any())
+                        <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4">
+                            <div class="d-flex align-items-center mb-1">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <strong class="small">Please fix the following:</strong>
+                            </div>
+                            <ul class="mb-0 small ps-3">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label text-secondary small fw-semibold">First Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control bg-light border-start-0" name="fname" value="{{ old('fname') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label class="form-label text-secondary small fw-semibold">Last Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person"></i></span>
+                                <input type="text" class="form-control bg-light border-start-0" name="lname" value="{{ old('lname') }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Email Address</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control bg-light border-start-0" name="email" value="{{ old('email') }}" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+                            <input type="password" class="form-control bg-light border-start-0" name="password" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small fw-semibold">Confirm Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-shield-check"></i></span>
+                            <input type="password" class="form-control bg-light border-start-0" name="password_confirmation" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block text-dark small fw-bold mb-2">Account Role Type</label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input ms-0 me-2" type="radio" name="role" value="coach" id="roleCoach" required>
+                                <label class="form-check-label fw-medium text-secondary small" for="roleCoach">
+                                 Coach
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input ms-0 me-2" type="radio" name="role" value="player" id="rolePlayer" required>
+                                <label class="form-check-label fw-medium text-secondary small" for="rolePlayer">
+                                Player
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2.5 rounded-3 fw-semibold shadow-sm mb-3">
+                        <i class="bi bi-check-circle-fill me-2"></i>Complete Registration
+                    </button>
+
+                    <div class="text-center mt-2">
+                        <p class="small text-muted mb-0">Already registered? <a href="{{ route('login') }}" class="text-primary fw-semibold text-decoration-none">Sign In Here</a></p>
+                    </div>
+                </form>
+            </div>
+
         </div>
-
-    </div>
     </div>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

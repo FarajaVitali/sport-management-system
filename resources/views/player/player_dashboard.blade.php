@@ -6,17 +6,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <title>Organizer Dashboard</title>
+    <title>Player Dashboard</title>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
+            /* Updated to a cleaner, Light White & Soft Slate palette */
             --brand:         #2563eb;
             --brand-light:   #f0f7ff;
             --accent:        #10b981;
-            --page-bg:       #fcfcfd; 
+            --page-bg:       #fcfcfd; /* Light white background */
             --surface:       #ffffff;
-            --border:        #eceef2; 
+            --border:        #eceef2; /* Lighter, more defined border */
             --text-primary:  #1e293b;
             --text-muted:    #94a3b8;
             --font-display: 'Bebas Neue', sans-serif;
@@ -26,6 +27,7 @@
         body {
             min-height: 100vh;
             background-color: var(--page-bg);
+            /* Softened background gradients for a cleaner look */
             background-image: 
                 radial-gradient(circle at top right, rgba(37, 99, 235, 0.03), transparent),
                 radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.03), transparent);
@@ -87,6 +89,7 @@
             border: 1px solid var(--border);
             border-radius: 24px;
             padding: 2.2rem;
+            /* Subtle shadow for a "light white" feel */
             box-shadow: 
                 0 4px 6px -1px rgba(0, 0, 0, 0.05), 
                 0 10px 15px -3px rgba(0, 0, 0, 0.03);
@@ -135,7 +138,7 @@
         }
         .dash-card:hover {
             transform: translateY(-4px);
-            border-color: var(--c-accent); 
+            border-color: var(--c-accent);
             box-shadow: 0 10px 20px rgba(0,0,0,0.04);
         }
 
@@ -176,6 +179,7 @@
 
 <div class="portal">
 
+    <!-- Header -->
     <div class="portal-header">
         <div class="portal-brand">
             <div class="brand-logo"><i class="bi bi-trophy-fill"></i></div>
@@ -185,47 +189,48 @@
             </div>
         </div>
         <div class="portal-greeting">
-            <div class="label">Welcome</div>
-            <div class="name">{{ auth()->user()->fname }}</div>
+            <div class="label">Welcome Back</div>
+            <div class="name">{{ $user->fname }}</div>
         </div>
     </div>
 
+    <!-- Panel -->
     <div class="dashboard-panel">
         <div class="panel-heading">
-            <div class="panel-title">Organizer <span>Dashboard</span></div>
+            <div class="panel-title">Player <span>Dashboard</span></div>
             <div class="panel-badge">Season 2025</div>
         </div>
 
         <div class="cards-grid">
 
-            <a href="{{ route('admin.players') }}" class="dash-card c-profile">
-                <div class="card-icon-wrap icon-profile"><i class="bi bi-person-lines-fill"></i></div>
-                <div class="card-label">Manage Players</div>
-                <div class="card-sub">Rosters & Approval</div>
+            <a href="{{ route('player.profile') }}" class="dash-card c-profile">
+                <div class="card-icon-wrap icon-profile"><i class="bi bi-person-circle"></i></div>
+                <div class="card-label">My Profile</div>
+                <div class="card-sub">Info & Team</div>
+            </a>
+
+            <a href="{{route('player.fixtures')}}" class="dash-card c-schedule">
+                <div class="card-icon-wrap icon-schedule"><i class="bi bi-calendar-event"></i></div>
+                <div class="card-label">Schedule</div>
+                <div class="card-sub">Match Dates</div>
             </a>
 
             <a href="#" class="dash-card c-standings">
-                <div class="card-icon-wrap icon-standings"><i class="bi bi-people-fill"></i></div>
-                <div class="card-label">Manage Coaches</div>
-                <div class="card-sub">Profiles & Teams</div>
-            </a>
-
-            <a href="{{ route('admin.management') }}" class="dash-card c-schedule">
-                <div class="card-icon-wrap icon-schedule"><i class="bi bi-bank"></i></div>
-                <div class="card-label">League Structure</div>
-                <div class="card-sub">Colleges & Teams</div>
+                <div class="card-icon-wrap icon-standings"><i class="bi bi-bar-chart-line"></i></div>
+                <div class="card-label">Standings</div>
+                <div class="card-sub">Rankings</div>
             </a>
 
             <a href="#" class="dash-card c-rules">
                 <div class="card-icon-wrap icon-rules"><i class="bi bi-journal-text"></i></div>
-                <div class="card-label">Tournament Rules</div>
-                <div class="card-sub">Guidelines & Policies</div>
+                <div class="card-label">Rules</div>
+                <div class="card-sub">Guidelines</div>
             </a>
 
             <a href="#" class="dash-card c-settings">
-                <div class="card-icon-wrap icon-settings"><i class="bi bi-sliders"></i></div>
-                <div class="card-label">Portal Settings</div>
-                <div class="card-sub">System Preferences</div>
+                <div class="card-icon-wrap icon-settings"><i class="bi bi-gear-fill"></i></div>
+                <div class="card-label">Settings</div>
+                <div class="card-sub">Preferences</div>
             </a>
 
             <div class="dash-card c-logout" onclick="document.getElementById('logout-form').submit();">
