@@ -52,6 +52,12 @@ class User extends Authenticatable
      * Define the relationship to the player profile.
      * Tells Laravel that a User has one PlayerProfile record.
      */
+
+    public function coachProfile(): HasOne
+    {
+        return $this->hasOne(CoachProfile::class);
+    }
+
     public function playerProfile(): HasOne
     {
         return $this->hasOne(PlayerProfile::class);

@@ -2,14 +2,34 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
 {
-    // Allows saving these specific columns via mass assignment
-    protected $fillable = ['name', 'college_id', 'sport_id', 'coach_name'];
+    use HasFactory;
+
     /**
-     * Get the college that owns the team.
+     * The attributes that are mass assignable.
+     * Removed 'coach_name' to support clean relational binding.
+     */
+    protected $fillable = [
+        'name',
+        'college_id',
+        'sport_id'
+    ];
+
+    /**
+     * Get the coach profile associated with the team roster.
+     */
+    public function coachProfile()
+    {
+        // Links to the coach_profiles table using 'team_id' foreign key
+        return $this->hasOne(CoachProfile::class, 'team_id');
+    }
+
+    /**
+     * Get the parent academic institution / college that owns the team squad.
      */
     public function college()
     {
@@ -17,12 +37,10 @@ class Team extends Model
     }
 
     /**
-     * Get the sport that the team plays.
+     * Get the tournament sport category configuration.
      */
     public function sport()
-{
-    return $this->belongsTo(Sport::class);
+    {
+        return $this->belongsTo(Sport::class);
+    }
 }
-}
-
-

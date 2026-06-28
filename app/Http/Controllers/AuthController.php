@@ -41,10 +41,14 @@ class AuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        if($user->role === 'player'){
+        // --- ONBOARDING REDIRECTION FOR NEW USERS ---
+        if ($user->role === 'coach') {
+            return redirect()->route('coach.form');
+        } elseif ($user->role === 'player') {
             return redirect()->route('player.form');
         }
 
+        // Fallback for admin or unhandled roles
         return $this->redirectByRole();
     }
 
@@ -138,8 +142,6 @@ class AuthController extends Controller
     {
         return view('player.dashboard');
     }
-
-    // --- LOGOUT ---
 
     public function logout(Request $request)
     {

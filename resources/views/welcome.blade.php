@@ -39,7 +39,7 @@
             padding: 0 24px;
         }
 
-        /* 1. Navbar Improvement */
+        /* Navbar Improvement */
         header {
             background: #ffffff;
             border-bottom: 1px solid var(--border);
@@ -66,6 +66,11 @@
         }
         .logo i { color: var(--primary); }
 
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
         .nav-links a {
             text-decoration: none;
             color: var(--dark);
@@ -78,7 +83,19 @@
             color: var(--primary);
         }
 
-        /* 2. Modernized Hero Section Layout */
+        .nav-btn {
+            background-color: var(--primary);
+            color: white !important;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15);
+        }
+        .nav-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Modernized Hero Section Layout */
         #hero {
             padding: 80px 0;
             background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
@@ -145,7 +162,7 @@
             background-color: var(--light);
         }
 
-        /* Mockup Graphic placeholder instead of raw color block */
+        /* Mockup Graphic placeholder */
         .hero-graphic {
             background: #ffffff;
             border-radius: 16px;
@@ -154,7 +171,7 @@
             border: 1px solid var(--border);
         }
 
-        /* 3. Key Features Grid Layout */
+        /* Key Features Grid Layout */
         .section-title {
             text-align: center;
             font-size: 32px;
@@ -221,7 +238,7 @@
             font-size: 14px;
         }
 
-        /* 4. Glassmorphic User Roles Layout */
+        /* Glassmorphic User Roles Layout */
         .user-roles {
             padding: 80px 0;
             background-color: var(--light);
@@ -273,7 +290,7 @@
             font-size: 12px;
         }
 
-        /* 5. Bottom CTA & Footer Formatting */
+        /* Bottom CTA & Footer Formatting */
         #registration-login {
             padding: 100px 0;
             text-align: center;
@@ -308,7 +325,7 @@
             }
             #hero { padding: 40px 0; text-align: center; }
             .hero-actions { justify-content: center; }
-            .nav-links { display: none; } /* Kept simple for raw CSS template layout */
+            .nav-links { display: none; } 
         }
     </style>
 </head>
@@ -319,9 +336,10 @@
             <a href="#" class="logo"><i class="fa-solid fa-trophy"></i> SportManage</a>
             <nav class="nav-links">
                 <a href="#" class="active">Home</a>
-                <a href=".features">Features</a>
-                <a href=".user-roles">Roles</a>
-                <a href="login.php">Login</a>
+                <a href="#features-section">Features</a>
+                <a href="#roles-section">Roles</a>
+                <a href="{{ route('login') }}">Login</a>
+                <a href="{{ route('register.form') }}" class="nav-btn">Register</a>
             </nav>
         </div>
     </header>
@@ -333,7 +351,7 @@
                 <p>Streamline your sports organization smoothly—from automatic player registrations directly to real-time league matches and dashboard configurations.</p>
                 <div class="hero-actions">
                     <a href="#registration-login" class="btn btn-primary">Get Started <i class="fa-solid fa-arrow-right"></i></a>
-                    <a href=".features" class="btn btn-secondary">Learn More</a>
+                    <a href="#features-section" class="btn btn-secondary">Learn More</a>
                 </div>
             </div>
             <div class="hero-graphic">
@@ -352,7 +370,7 @@
         </div>
     </section>
 
-    <section class="features container">
+    <section class="features container" id="features-section">
         <h2 class="section-title">Key Platform Features</h2>
         <p class="section-subtitle">Everything you need to run your tournament system perfectly on any mobile device or workstation monitor.</p>
         
@@ -375,7 +393,7 @@
         </div>
     </section>
 
-    <section class="user-roles">
+    <section class="user-roles" id="roles-section">
         <div class="container">
             <h2 class="section-title">Tailored Multi-Role Interfaces</h2>
             <p class="section-subtitle">Our three-sided workspace adapts specifically to match the permissions required for each user group.</p>
@@ -417,7 +435,7 @@
             <h2>Ready to Organize Your Sport?</h2>
             <p>Join thousands of active sport coordinators, players, and operational managers globally.</p>
             <div style="display: flex; justify-content: center; gap: 16px;">
-                <a href="{{ route('register') }}" class="btn btn-primary" style="background-color: var(--accent); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);">Register Now</a>
+                <a href="{{ route('register.form') }}" class="btn btn-primary" style="background-color: var(--accent); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);">Register Now</a>
                 <a href="{{ route('login') }}" class="btn btn-secondary" style="background-color: #1e293b; color: white; border-color: #334155;">Log In to Account</a>
             </div>
         </div>

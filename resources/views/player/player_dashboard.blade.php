@@ -11,13 +11,12 @@
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            /* Updated to a cleaner, Light White & Soft Slate palette */
             --brand:         #2563eb;
             --brand-light:   #f0f7ff;
             --accent:        #10b981;
-            --page-bg:       #fcfcfd; /* Light white background */
+            --page-bg:       #fcfcfd; 
             --surface:       #ffffff;
-            --border:        #eceef2; /* Lighter, more defined border */
+            --border:        #eceef2;
             --text-primary:  #1e293b;
             --text-muted:    #94a3b8;
             --font-display: 'Bebas Neue', sans-serif;
@@ -27,7 +26,6 @@
         body {
             min-height: 100vh;
             background-color: var(--page-bg);
-            /* Softened background gradients for a cleaner look */
             background-image: 
                 radial-gradient(circle at top right, rgba(37, 99, 235, 0.03), transparent),
                 radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.03), transparent);
@@ -89,7 +87,6 @@
             border: 1px solid var(--border);
             border-radius: 24px;
             padding: 2.2rem;
-            /* Subtle shadow for a "light white" feel */
             box-shadow: 
                 0 4px 6px -1px rgba(0, 0, 0, 0.05), 
                 0 10px 15px -3px rgba(0, 0, 0, 0.03);
@@ -151,7 +148,6 @@
             transition: transform 0.22s ease;
         }
 
-        /* Color variants using softer hues */
         .c-profile   { --c-accent:#2563eb; }
         .c-schedule  { --c-accent:#059669; }
         .c-standings { --c-accent:#0891b2; }
@@ -179,7 +175,6 @@
 
 <div class="portal">
 
-    <!-- Header -->
     <div class="portal-header">
         <div class="portal-brand">
             <div class="brand-logo"><i class="bi bi-trophy-fill"></i></div>
@@ -194,7 +189,6 @@
         </div>
     </div>
 
-    <!-- Panel -->
     <div class="dashboard-panel">
         <div class="panel-heading">
             <div class="panel-title">Player <span>Dashboard</span></div>
@@ -209,7 +203,7 @@
                 <div class="card-sub">Info & Team</div>
             </a>
 
-            <a href="{{route('player.fixtures')}}" class="dash-card c-schedule">
+            <a href="{{ route('player.fixtures') }}" class="dash-card c-schedule">
                 <div class="card-icon-wrap icon-schedule"><i class="bi bi-calendar-event"></i></div>
                 <div class="card-label">Schedule</div>
                 <div class="card-sub">Match Dates</div>
@@ -221,7 +215,7 @@
                 <div class="card-sub">Rankings</div>
             </a>
 
-            <a href="#" class="dash-card c-rules">
+           <a href="{{ route('player.rules.view') }}" class="dash-card c-rules">
                 <div class="card-icon-wrap icon-rules"><i class="bi bi-journal-text"></i></div>
                 <div class="card-label">Rules</div>
                 <div class="card-sub">Guidelines</div>

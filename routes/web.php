@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PlayerController;
+use App\Http\Controllers\CoachController;
 use App\Http\Controllers\Admin\ManagementController;
+use App\Http\Controllers\GeneralController;
 
 // --- Public Routes (Guests only) ---
 Route::get('/', function () {
@@ -24,6 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AuthController::class, 'showAdminDashboard'])->name('dashboard');
         Route::get('/players', [AuthController::class, 'show'])->name('players');
+        
+        // FIXED: Stripped duplicate names & paths. Points to your ManagementController handler!
+        Route::get('/coaches', [ManagementController::class, 'viewCoaches'])->name('coaches');
 
         // Access Controls Layout Toggles
         Route::post('/allow/{id}', [AuthController::class, 'allowUser'])->name('allow'); 
@@ -36,10 +41,33 @@ Route::middleware('auth')->group(function () {
         
         // AUTOMATED SCHEDULING: Generates team competition matrices via round-robin method
         Route::post('/management/generate-fixtures', [ManagementController::class, 'generateFixtures'])->name('generate_fixtures');
-    });
+        // Live Match Management Routes
+        Route::post('/management/fixtures/{id}/start', [ManagementController::class, 'startMatch'])->name('match.start');
+        Route::post('/management/fixtures/{id}/goal', [ManagementController::class, 'addGoal'])->name('match.goal');
+        Route::post('/management/fixtures/{id}/end', [ManagementController::class, 'endMatch'])->name('match.end');
+        Route::get('/fixtures', [ManagementController::class, 'viewFixtures'])->name('fixtures');
+        Route::get('/live-control/{id}', [ManagementController::class, 'showLivePanel'])->name('live_match_panel');
+        Route::post('/fixtures/{id}/add-goal', [ManagementController::class, 'addGoal'])->name('add_goal');
+        //Route::get('/rules', [Admin\RuleController::class, 'index'])->name('rules');
+        //Route::post('/rules', [Admin\RuleController::class, 'store'])->name('rules.store');
+        Route::get('/rules', [GeneralController::class, 'showRules'])->name('rules.view');
+       });
 
-    // --- Coach Dashboard ---
-    Route::get('/coach/dashboard', [AuthController::class, 'showCoachDashboard'])->name('coach.dashboard');
+    // --- Coach Specific Portal Cluster ---
+    Route::prefix('coach')->name('coach.')->group(function () {
+        Route::get('/dashboard', [AuthController::class, 'showCoachDashboard'])->name('dashboard');
+        
+        // ONBOARDING: Profile Setup Form Layouts for pre-registered attributes
+        Route::get('/setup-form', [CoachController::class, 'showCoachForm'])->name('form');
+        Route::post('/setup-save', [CoachController::class, 'storeInfo'])->name('info.save');
+
+        // Core Dashboard Navigations
+        Route::get('/players', [CoachController::class, 'viewPlayers'])->name('players');
+        Route::get('/fixtures', [CoachController::class, 'viewFixtures'])->name('fixtures');
+        Route::get('/profile', [CoachController::class, 'viewProfile'])->name('profile');
+        Route::get('/profile/edit', [CoachController::class, 'editProfile'])->name('profile.edit');
+        Route::post('/profile/update', [CoachController::class, 'updateProfile'])->name('profile.update');
+    });
 
     // --- Player Specific Portal Cluster ---
     Route::prefix('player')->name('player.')->group(function () {
@@ -48,9 +76,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/player_profile', [PlayerController::class, 'showPlayerProfile'])->name('profile');
         Route::post('/info', [PlayerController::class, 'updateInfo'])->name('info.save');
         
-        // NEW: Read-only scheduling timeline stream for active players
+        // Read-only scheduling timeline stream for active players
         Route::get('/fixtures', [PlayerController::class, 'viewFixtures'])->name('fixtures');
-    });
+        Route::get('/rules-view', [App\Http\Controllers\GeneralController::class, 'showRules'])->name('rules.view');
+        
+        });
     
     // API Fetch Endpoint for Dependent Dropdowns
     Route::get('/api/colleges/{college}/teams', [PlayerController::class, 'getTeamsByCollege']);

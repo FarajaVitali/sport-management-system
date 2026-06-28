@@ -13,7 +13,6 @@
         :root {
             --brand:         #2563eb;
             --brand-light:   #f0f7ff;
-            --accent:        #10b981;
             --page-bg:       #fcfcfd; 
             --surface:       #ffffff;
             --border:        #eceef2; 
@@ -48,7 +47,7 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── Header ── */
+        /* Header */
         .portal-header {
             display: flex;
             align-items: center;
@@ -81,16 +80,13 @@
         }
         .portal-greeting .name { font-size: 1.05rem; font-weight: 600; color: var(--brand); }
 
-        /* ── Main panel ── */
+        /* Dashboard Panel */
         .dashboard-panel {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 24px;
             padding: 2.2rem;
-            box-shadow: 
-                0 4px 6px -1px rgba(0, 0, 0, 0.05), 
-                0 10px 15px -3px rgba(0, 0, 0, 0.03);
-            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.03);
         }
 
         .panel-heading {
@@ -108,7 +104,7 @@
             padding: 4px 12px; border-radius: 20px;
         }
 
-        /* ── Grid ── */
+        /* Grid */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -120,7 +116,7 @@
             .portal-greeting { text-align: left; }
         }
 
-        /* ── Card ── */
+        /* Card Styles */
         .dash-card {
             background: #ffffff;
             border: 1px solid var(--border);
@@ -139,28 +135,26 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.04);
         }
 
-        /* ── Icon ── */
         .card-icon-wrap {
             width: 50px; height: 50px; border-radius: 14px;
             margin: 0 auto 1rem;
             display: flex; align-items: center; justify-content: center;
             font-size: 1.3rem; color: #fff;
-            transition: transform 0.22s ease;
         }
 
-        /* Color variants using softer hues */
+        /* Color Variations */
         .c-profile   { --c-accent:#2563eb; }
+        .c-coaches   { --c-accent:#0891b2; }
         .c-schedule  { --c-accent:#059669; }
-        .c-standings { --c-accent:#0891b2; }
         .c-rules     { --c-accent:#d97706; }
-        .c-settings  { --c-accent:#7c3aed; }
+        .c-live      { --c-accent:#7c3aed; } /* Purple for Live */
         .c-logout    { --c-accent:#dc2626; }
 
         .icon-profile   { background: #eff6ff; color: #2563eb; }
+        .icon-coaches   { background: #ecfeff; color: #0891b2; }
         .icon-schedule  { background: #ecfdf5; color: #059669; }
-        .icon-standings { background: #ecfeff; color: #0891b2; }
         .icon-rules     { background: #fffbeb; color: #d97706; }
-        .icon-settings  { background: #f5f3ff; color: #7c3aed; }
+        .icon-live      { background: #f5f3ff; color: #7c3aed; }
         .icon-logout    { background: #fef2f2; color: #dc2626; }
 
         .card-label { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
@@ -204,8 +198,8 @@
                 <div class="card-sub">Rosters & Approval</div>
             </a>
 
-            <a href="#" class="dash-card c-standings">
-                <div class="card-icon-wrap icon-standings"><i class="bi bi-people-fill"></i></div>
+            <a href="{{ route('admin.coaches') }}" class="dash-card c-coaches">
+                <div class="card-icon-wrap icon-coaches"><i class="bi bi-people-fill"></i></div>
                 <div class="card-label">Manage Coaches</div>
                 <div class="card-sub">Profiles & Teams</div>
             </a>
@@ -222,10 +216,10 @@
                 <div class="card-sub">Guidelines & Policies</div>
             </a>
 
-            <a href="#" class="dash-card c-settings">
-                <div class="card-icon-wrap icon-settings"><i class="bi bi-sliders"></i></div>
-                <div class="card-label">Portal Settings</div>
-                <div class="card-sub">System Preferences</div>
+            <a href="{{ route('admin.fixtures') }}" class="dash-card c-live">
+                <div class="card-icon-wrap icon-live"><i class="bi bi-broadcast"></i></div>
+                <div class="card-label">Live Match Control</div>
+                <div class="card-sub">Scores & Timers</div>
             </a>
 
             <div class="dash-card c-logout" onclick="document.getElementById('logout-form').submit();">

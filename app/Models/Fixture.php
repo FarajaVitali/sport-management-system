@@ -7,34 +7,31 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Fixture extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
-        'home_team_id',
-        'away_team_id',
-        'round_number',
-        'match_date',
-        'status',
+        'home_team_id', 
+        'away_team_id', 
+        'round_number', 
+        'match_date', 
+        'venue', 
+        'status', 
+        'home_score', 
+        'away_score', 
+        'started_at', 
     ];
 
-    /**
-     * Get the home team competing in this fixture.
-     */
+    // Add this to handle the date/time correctly
+    protected $casts = [
+        'started_at' => 'datetime',
+        'match_date' => 'datetime',
+    ];
+
     public function homeTeam(): BelongsTo
     {
-        // Explicitly map home_team_id to the Team model
         return $this->belongsTo(Team::class, 'home_team_id');
     }
 
-    /**
-     * Get the away team competing in this fixture.
-     */
     public function awayTeam(): BelongsTo
     {
-        // Explicitly map away_team_id to the Team model
         return $this->belongsTo(Team::class, 'away_team_id');
     }
 }

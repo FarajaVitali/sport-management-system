@@ -30,10 +30,7 @@ class PlayerController extends Controller
      */
     public function getTeamsByCollege($collegeId)
     {
-        // Fetch only the teams that match the selected college_id
         $teams = Team::where('college_id', $collegeId)->get();
-
-        // Send the data back to your JavaScript as a clean JSON response
         return response()->json($teams);
     }
    
@@ -58,23 +55,16 @@ class PlayerController extends Controller
     }
 
     /**
-     * Display the comprehensive league match calendar to players split cleanly by sport.
+     * Display the fixture list ordered by date for the live dashboard.
      */
     public function viewFixtures()
     {
-        // Fetch matches, eager-load relationships, and group them by Sport first, then by Round
-        $fixturesBySport = Fixture::with(['homeTeam.sport', 'awayTeam'])
-            ->get()
-            ->groupBy(function ($fixture) {
-                // Safely group by the home team's sport name
-                return $fixture->homeTeam->sport->name ?? 'General / Other';
-            })
-            ->map(function ($sportMatches) {
-                // Within each sport, group the matches by their round number
-                return $sportMatches->groupBy('round_number');
-            });
-
-        return view('player.fixtures', compact('fixturesBySport'));
+        // Fetch fixtures with team data, ordered by date
+        $fixtures = Fixture::with(['homeTeam', 'awayTeam'])
+                    ->orderBy('match_date', 'asc')
+                    ->get();
+                    
+        return view('player.fixtures', compact('fixtures'));
     }
 
     /**
@@ -82,7 +72,6 @@ class PlayerController extends Controller
      */
     public function updateInfo(Request $request): RedirectResponse
     {
-        // 1. Validate the incoming data securely including college_id verification
         $validated = $request->validate([
             'college_id'    => 'required|exists:colleges,id',
             'team'          => 'required|string|max:255',
@@ -90,7 +79,6 @@ class PlayerController extends Controller
             'position'      => 'required|string|max:100',
         ]);
 
-        // 2. Perform safe database transaction operations to populate attributes
         DB::transaction(function () use ($request, $validated) {
             $user = $request->user();
 
