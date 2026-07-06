@@ -24,6 +24,7 @@ class User extends Authenticatable
         'role',
         'status',
     ];
+    
 
     /**
      * The attributes that should be hidden for serialization.
@@ -61,6 +62,10 @@ class User extends Authenticatable
     public function playerProfile(): HasOne
     {
         return $this->hasOne(PlayerProfile::class);
+    }
+    public function assignedFixtures()
+    {
+        return $this->hasMany(Fixture::class, 'referee_id');
     }
 
     /**

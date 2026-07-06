@@ -25,7 +25,7 @@ class AuthController extends Controller
             'fname' => 'required|string|max:255',
             'lname' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'role' => 'required|in:admin,coach,player',
+            'role' => 'required|in:coach,player,referee,fan',
             'password' => 'required|min:8|confirmed',
         ]);
 
@@ -35,20 +35,18 @@ class AuthController extends Controller
             'email' => $request->email,
             'role' => $request->role,
             'password' => Hash::make($request->password),
-            'status' => 'active', // Default status upon creation
+            'status' => 'active', 
         ]);
 
         Auth::login($user);
         $request->session()->regenerate();
 
-        // --- ONBOARDING REDIRECTION FOR NEW USERS ---
         if ($user->role === 'coach') {
             return redirect()->route('coach.form');
         } elseif ($user->role === 'player') {
             return redirect()->route('player.form');
         }
 
-        // Fallback for admin or unhandled roles
         return $this->redirectByRole();
     }
 
@@ -70,10 +68,11 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            // OPTIONAL CHECK: If you want to block banned users right at login:
-            if (Auth::user()->status === 'banned') {
+            $user = Auth::user();
+
+            if ($user->status === 'banned') {
                 Auth::logout();
-                return back()->withErrors(['email' => 'Your access privileges have been suspended.']);
+                return back()->withErrors(['email' => 'Your account has been suspended. Please contact the administrator.']);
             }
 
             $request->session()->regenerate();
@@ -83,64 +82,88 @@ class AuthController extends Controller
         return back()->withErrors(['email' => 'Invalid login credentials']);
     }
 
-    // --- REDIRECTION LOGIC ---
+    // --- CENTRALIZED REDIRECTION ENGINE ---
 
     private function redirectByRole()
-    {
-        $role = Auth::user()->role;
+{
+    $user = Auth::user();
+    
+    // DEBUG: Uncomment the next line to see what role the system sees
+    // dd($user->role); 
 
-        return match($role) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'coach' => redirect()->route('coach.dashboard'),
-            'player' => redirect()->route('player.player_dashboard'),
-            default => redirect('/'),
-        };
+    if (!$user->role) {
+        return redirect('/login')->with('error', 'Your account has no assigned role.');
     }
+
+    return match($user->role) {
+        'admin'   => redirect()->route('admin.dashboard'),
+        'coach'   => redirect()->route('coach.dashboard'),
+        'player'  => redirect()->route('player.player_dashboard'),
+        'referee' => redirect()->route('referee.dashboard'),
+        'fan'     => redirect()->route('fan.dashboard'),
+        default   => redirect('/'),
+    };
+}
 
     // --- DASHBOARDS & MANAGEMENT ACTIONS ---
 
     public function showAdminDashboard()
     {
+        // SECURITY CHECK
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('login')->with('error', 'Unauthorized access.');
+        }
+
         $users = User::all(); 
         return view('admin.dashboard', compact('users'));
     }
-
     public function show()
     {
         $users = User::where('role', 'player')->with('playerProfile')->get();
         return view('admin.players', compact('users'));
     }
 
-    /**
-     * Change a user's access status to allowed (Active).
-     */
     public function allowUser($id)
     {
         $user = User::findOrFail($id);
         $user->update(['status' => 'active']);
-
-        return redirect()->back()->with('success', "Player account access reinstated successfully!");
+        return redirect()->back()->with('success', "Account access reinstated successfully!");
     }
 
-    /**
-     * Restrict a user's dashboard entry permissions (Banned/Suspended).
-     */
     public function banUser($id)
     {
         $user = User::findOrFail($id);
         $user->update(['status' => 'banned']);
-
-        return redirect()->back()->with('success', "Player access privileges revoked immediately.");
+        return redirect()->back()->with('success', "User access privileges revoked immediately.");
     }
 
     public function showCoachDashboard() 
     {
-        return view('coach.dashboard');
+        $coach = Auth::user();
+        if ($coach->coachProfile && $coach->coachProfile->team) {
+            $team = $coach->coachProfile->team;
+            $players = User::where('role', 'player')
+                ->whereHas('playerProfile', function($query) use ($team) {
+                    $query->where('team', $team->name); 
+                })
+                ->with('playerProfile')
+                ->get();
+        } else {
+            $team = null;
+            $players = collect();
+        }
+
+        return view('coach.dashboard', compact('team', 'players'));
     }
 
-    public function showPlayerDashboard() 
+    public function showRefereeDashboard()
     {
-        return view('player.dashboard');
+        return redirect()->route('referee.dashboard');
+    }
+
+    public function showFanDashboard()
+    {
+        return view('fan.dashboard');
     }
 
     public function logout(Request $request)

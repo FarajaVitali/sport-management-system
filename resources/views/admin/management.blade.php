@@ -4,7 +4,6 @@
 
 @section('content')
 <style>
-    /* Premium Design System Overrides */
     body {
         background-color: #f8fafc;
         color: #1e293b;
@@ -12,8 +11,6 @@
         overflow-x: hidden;
     }
 
-    /* 1. STICKY NAVBAR EXTENSION */
-    /* Assumes your layout navbar uses an identifiable parent wrapper. If it doesn't stick naturally, this forces it: */
     .navbar, [role="navigation"] {
         position: sticky !important;
         top: 0;
@@ -21,17 +18,15 @@
         box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
     }
     
-    /* 2. PERSISTENT ASYNCHRONOUS SCROLL LAYOUT WRAPPERS */
     .admin-layout-wrapper {
         display: flex;
-        min-height: calc(100vh - 56px); /* Viewport height minus average navbar footprint */
+        min-height: calc(100vh - 56px);
     }
 
-    /* Fixed Left Structural Panel Sidebar */
     .admin-sidebar-panel {
         width: 360px;
         position: fixed;
-        top: 56px; /* Below the sticky navbar boundary */
+        top: 56px;
         left: 0;
         bottom: 0;
         overflow-y: auto;
@@ -41,15 +36,13 @@
         z-index: 1010;
     }
 
-    /* Independent Scroll Dashboard Main Pane */
     .admin-main-viewport {
-        margin-left: 360px; /* Perfectly matches sidebar width offset */
+        margin-left: 360px;
         flex-grow: 1;
         padding: 1.5rem 2rem;
         overflow-y: auto;
     }
     
-    /* Premium UI Components styling card systems */
     .custom-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -88,7 +81,7 @@
     }
 
     .btn-action-primary:hover {
-        box-shadow: 0 4px 12 rgba(37, 99, 235, 0.25);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         filter: brightness(1.05);
     }
 
@@ -129,7 +122,6 @@
         font-weight: 500;
     }
 
-    /* Custom thin scrollbar design aesthetics for the fixed panel layout components */
     .admin-sidebar-panel::-webkit-scrollbar {
         width: 4px;
     }
@@ -138,7 +130,6 @@
         border-radius: 10px;
     }
 
-    /* Screen Breakpoints safety handling responsive view scaling */
     @media (max-width: 991.98px) {
         .admin-layout-wrapper { display: block; }
         .admin-sidebar-panel { position: static; width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; padding: 1rem; }
@@ -216,6 +207,7 @@
             </div>
         </div>
 
+        <!-- TEAM DEPLOYMENT CARD -->
         <div class="card custom-card rounded-4 border-0 mb-4">
             <div class="card-header bg-white py-3 border-bottom-0 rounded-top-4">
                 <h6 class="mb-0 fw-bold text-dark d-flex align-items-center">
@@ -228,31 +220,39 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold text-secondary">Belongs to Parent College</label>
-                            <select name="college_id" class="form-select form-select-custom" required>
+                            <select name="college_id" id="team_college_id" class="form-select form-select-custom" required>
                                 <option value="" disabled selected>-- Select Affiliated College --</option>
                                 @foreach($colleges as $col)
-                                    <option value="{{ $col->id }}">{{ $col->name }}</option>
+                                    <option value="{{ $col->id }}" data-name="{{ $col->name }}">{{ $col->name }}</option>
                                 @endforeach
                             </select>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold text-secondary">Sport Type</label>
-                            <select name="sport_id" class="form-select form-select-custom" required>
+                            <select name="sport_id" id="team_sport_id" class="form-select form-select-custom" required>
                                 <option value="" disabled selected>-- Select Sport Type --</option>
                                 @foreach($sports as $sport) 
-                                    <option value="{{ $sport->id }}">{{ ucfirst($sport->name) }}</option>
+                                    <option value="{{ $sport->id }}" data-name="{{ ucfirst($sport->name) }}">{{ ucfirst($sport->name) }}</option>
                                 @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold text-secondary">Division Category</label>
+                            <select name="gender" id="team_gender_id" class="form-select form-select-custom" required>
+                                <option value="men" selected>Men's Division</option>
+                                <option value="women">Women's Division</option>
                             </select>
                         </div>
                         
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold text-secondary">Unique Team Roster Full Name</label>
-                            <input type="text" name="name" class="form-control form-control-custom" placeholder="e.g., ATC-Football" required>
+                            <label class="form-label small fw-semibold text-slate-700">System Generated Team Title</label>
+                            <input type="text" name="name" id="generated_team_name" class="form-control form-control-custom bg-light border-primary-subtle font-monospace text-primary fw-bold" placeholder="Waiting for selection..." readonly required>
                         </div>
 
-                        <div class="col-md-6">
-                            <label for="coach_id" class="form-label small fw-semibold text-secondary">Assign Head Coach</label>
+                        <div class="col-md-12">
+                            <label class="form-label small fw-semibold text-secondary">Assign Head Coach</label>
                             <select name="coach_id" id="coach_id" class="form-select form-select-custom">
                                 <option value="" selected>-- Leave Unassigned (Vacant) --</option>
                                 @foreach($coaches as $coach)
@@ -268,6 +268,7 @@
             </div>
         </div>
 
+        <!-- TEAMS REGISTER DISPLAY TABLE -->
         <div class="card custom-card rounded-4 border-0 overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 small interactive-table">
@@ -275,7 +276,8 @@
                         <tr>
                             <th class="ps-4 py-3 fw-bold">Team Name</th>
                             <th class="py-3 fw-bold">Parent Institution</th>
-                            <th class="py-3 fw-bold">Sport</th>
+                            <th class="py-3 fw-bold">Sport Category</th>
+                            <th class="py-3 fw-bold">Division</th>
                             <th class="py-3 fw-bold">Head Coach</th>
                         </tr>
                     </thead>
@@ -287,6 +289,11 @@
                             <td>
                                 <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1.5 rounded-2">
                                     {{ $team->sport->name ?? 'N/A' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-dark-subtle text-dark border px-2.5 py-1.5 rounded-2 text-uppercase font-monospace small">
+                                    {{ $team->gender }} <!-- RENDERS ACCURATE VALUE DIRECT FROM DB -->
                                 </span>
                             </td>
                             <td>
@@ -304,7 +311,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center py-5 text-muted fw-medium">
+                            <td colspan="5" class="text-center py-5 text-muted fw-medium">
                                 <i class="bi bi-inbox fs-4 d-block mb-2 text-secondary"></i>
                                 No operational teams configured yet.
                             </td>
@@ -317,4 +324,34 @@
     </main>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const collegeSelect = document.getElementById('team_college_id');
+        const sportSelect = document.getElementById('team_sport_id');
+        const genderSelect = document.getElementById('team_gender_id');
+        const nameInput = document.getElementById('generated_team_name');
+
+        function generateTeamTitle() {
+            const selectedCollege = collegeSelect.options[collegeSelect.selectedIndex];
+            const selectedSport = sportSelect.options[sportSelect.selectedIndex];
+            
+            const collegeName = selectedCollege ? selectedCollege.getAttribute('data-name') : '';
+            const sportName = selectedSport ? selectedSport.getAttribute('data-name') : '';
+            const genderRaw = genderSelect.value;
+            
+            const genderFormatted = genderRaw ? `(${genderRaw.charAt(0).toUpperCase() + genderRaw.slice(1)})` : '';
+
+            if (collegeName && sportName) {
+                nameInput.value = `${collegeName} ${sportName} ${genderFormatted}`.trim();
+            } else {
+                nameInput.value = '';
+            }
+        }
+
+        collegeSelect.addEventListener('change', generateTeamTitle);
+        sportSelect.addEventListener('change', generateTeamTitle);
+        genderSelect.addEventListener('change', generateTeamTitle);
+    });
+</script>
 @endsection

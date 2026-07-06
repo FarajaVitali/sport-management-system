@@ -51,17 +51,6 @@
             box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
         }
 
-        .form-control::placeholder {
-            color: #94a3b8;
-        }
-
-        .form-control:disabled, .form-select:disabled {
-            background-color: #f1f5f9;
-            border-color: #e2e8f0;
-            color: #94a3b8;
-            opacity: 0.7;
-        }
-
         .btn-submit {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             border: none;
@@ -76,10 +65,6 @@
         .btn-submit:hover:not(:disabled) {
             box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
             filter: brightness(1.05);
-        }
-
-        .btn-submit:active {
-            filter: brightness(0.95);
         }
 
         .brand-header {
@@ -105,6 +90,7 @@
                     <p class="text-muted small">Complete your profile setup to link with your team roster</p>
                 </div>
 
+                <!-- College Select -->
                 <div class="mb-3">
                     <label class="form-label">Choose College</label>
                     <select class="form-select" id="college-select" name="college_id" required>
@@ -115,22 +101,13 @@
                     </select>
                 </div>
 
+                <!-- Team Select -->
                 <div class="mb-3">
                     <label class="form-label">Choose Team</label>
                     <select class="form-select" id="team-select" name="team" required disabled>
-                        <option value="">Select a college first</option>
+                      
+                    <option value="">Select a college first</option>
                     </select>
-                </div>
-
-                <div class="row">
-                    <div class="col-sm-5 mb-3">
-                        <label class="form-label">Jersey Number</label>
-                        <input type="number" class="form-control" name="jersey_number" min="0" max="99" placeholder="e.g., 10" required>
-                    </div>
-                    <div class="col-sm-7 mb-3">
-                        <label class="form-label">Position</label>
-                        <input type="text" class="form-control" name="position" placeholder="e.g., Striker, Guard" required>
-                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-submit w-100 mt-3 shadow-sm">SUBMIT PROFILE</button>
@@ -138,47 +115,41 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('college-select').addEventListener('change', function () {
-            const collegeId = this.value;
-            const teamSelect = document.getElementById('team-select');
+<script>
+    const collegeSelect = document.getElementById('college-select');
+    const teamSelect = document.getElementById('team-select');
 
-            if (!collegeId) {
-                teamSelect.innerHTML = '<option value="">Select a college first</option>';
-                teamSelect.disabled = true;
-                return;
-            }
+    // 1. When college changes, fetch Teams
+    collegeSelect.addEventListener('change', function () {
+        const collegeId = this.value;
+        
+        // Reset and show loading state
+        teamSelect.innerHTML = '<option value="">Loading teams...</option>';
+        teamSelect.disabled = true;
 
-            teamSelect.innerHTML = '<option value="">Loading teams...</option>';
-            teamSelect.disabled = true;
+        if (!collegeId) {
+            teamSelect.innerHTML = '<option value="">Select a college first</option>';
+            return;
+        }
 
-            fetch(`/api/colleges/${collegeId}/teams`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Server returned HTTP status ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    teamSelect.innerHTML = '<option value="">Select Team</option>';
-                    
-                    if (data && data.length > 0) {
-                        data.forEach(team => {
-                            teamSelect.innerHTML += `<option value="${team.name}">${team.name}</option>`;
-                        });
-                        teamSelect.disabled = false;
-                    } else {
-                        teamSelect.innerHTML = '<option value="">No teams available for this college</option>';
-                        teamSelect.disabled = true;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching teams:', error);
-                    teamSelect.innerHTML = '<option value="">Error loading teams</option>';
-                    teamSelect.disabled = true;
+        fetch(`/api/colleges/${collegeId}/teams`)
+            .then(res => res.json())
+            .then(data => {
+                teamSelect.innerHTML = '<option value="">Select Team</option>';
+                data.forEach(team => {
+                    // Populate teams
+                    teamSelect.innerHTML += `
+                        <option value="${team.name}">
+                            ${team.name}
+                        </option>`;
                 });
-        });
-    </script>
+                teamSelect.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error fetching teams:', error);
+                teamSelect.innerHTML = '<option value="">Error loading teams</option>';
+            });
+    });
+</script>
 </body>
-
 </html>

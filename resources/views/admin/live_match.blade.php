@@ -1,111 +1,267 @@
 @extends('layout.navbar_only')
 
-@section('title', 'Live Match Control')
+@section('title', 'Match Arena Overview')
 
 @section('content')
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            
-            <h5 class="text-muted text-uppercase fw-bold mb-3">Live Match Control</h5>
-            
-            <div class="mb-4">
-                <span id="live-timer" class="badge bg-danger fs-1 px-4 py-2 rounded-3 shadow-sm timer-blink">
-                    00:00
-                </span>
-                <p class="text-muted small mt-2">Minutes : Seconds</p>
-            </div>
+<div class="match-arena-wrapper py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                
+                <h6 class="timeline-header text-center mb-4">Match Board Timeline</h6>
 
-            <div class="card shadow-lg border-0 rounded-4 p-5 mb-4">
-                <div class="d-flex align-items-center justify-content-between">
+                <!-- Live Score App Style Card -->
+                <div class="livescore-card mx-auto mb-5">
                     
-                    <div class="text-center w-25">
-                        <h4 class="fw-bold">{{ $fixture->homeTeam->name }}</h4>
-                        <h1 class="display-1 fw-bolder text-primary" id="home-score-display">{{ $fixture->home_score }}</h1>
+                    <!-- Left Section: Match Status & Time -->
+                    <div class="livescore-status">
                         @if($fixture->status === 'live')
-                            <button onclick="addGoal('home')" class="btn btn-outline-primary btn-lg rounded-circle fw-bold fs-4" style="width: 60px; height: 60px;">+</button>
+                            <div class="status-top text-danger">LIVE</div>
+                            <div id="live-timer" class="status-bottom text-danger live-pulse">00:00</div>
+                        @elseif($fixture->status === 'completed')
+                            <div class="status-top text-muted">FT</div>
+                            <div class="status-bottom"></div>
+                        @else
+                            <div class="status-top text-muted">Fixture</div>
+                            <div class="status-bottom">-</div>
                         @endif
                     </div>
 
-                    <div class="text-muted fw-bold fs-4">VS</div>
+                    <!-- Vertical Divider -->
+                    <div class="livescore-divider"></div>
 
-                    <div class="text-center w-25">
-                        <h4 class="fw-bold">{{ $fixture->awayTeam->name }}</h4>
-                        <h1 class="display-1 fw-bolder text-primary" id="away-score-display">{{ $fixture->away_score }}</h1>
-                        @if($fixture->status === 'live')
-                            <button onclick="addGoal('away')" class="btn btn-outline-primary btn-lg rounded-circle fw-bold fs-4" style="width: 60px; height: 60px;">+</button>
-                        @endif
+                    <!-- Middle Section: Teams & Scores -->
+                    <div class="livescore-details">
+                        
+                        <!-- Home Team Row -->
+                        <div class="team-row mb-3">
+                            <div class="team-logo">
+                                <!-- Placeholder icon if you don't have team logos -->
+                                <i class="bi bi-shield-shaded text-secondary"></i>
+                            </div>
+                            <div class="team-name" title="{{ $fixture->homeTeam->name }}">
+                                {{ $fixture->homeTeam->name }}
+                            </div>
+                            <div class="team-score" id="home-score-display">
+                                {{ $fixture->home_score }}
+                            </div>
+                        </div>
+
+                        <!-- Away Team Row -->
+                        <div class="team-row">
+                            <div class="team-logo">
+                                <!-- Placeholder icon if you don't have team logos -->
+                                <i class="bi bi-shield-shaded text-secondary"></i>
+                            </div>
+                            <div class="team-name" title="{{ $fixture->awayTeam->name }}">
+                                {{ $fixture->awayTeam->name }}
+                            </div>
+                            <div class="team-score" id="away-score-display">
+                                {{ $fixture->away_score }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right Section: Action/Favorite Star -->
+                    <div class="livescore-action">
+                        <i class="bi bi-star"></i>
                     </div>
 
                 </div>
-            </div>
 
-            <div class="d-flex justify-content-center gap-3">
-                @if($fixture->status !== 'live')
-                    <form action="{{ route('admin.match.start', $fixture->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-success btn-lg px-5 fw-bold shadow-sm">
-                            <i class="bi bi-play-circle me-2"></i> Kick Off
-                        </button>
-                    </form>
-                @else
-                    <form action="{{ route('admin.match.end', $fixture->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-dark btn-lg px-5 fw-bold shadow-sm">
-                            <i class="bi bi-stop-circle me-2"></i> End Match
-                        </button>
-                    </form>
-                @endif
-            </div>
+                <div class="d-flex justify-content-center">
+                    <a href="{{ route('admin.view_fixtures') }}" class="btn action-btn shadow-sm">
+                        <i class="bi bi-arrow-left me-2"></i> Return to Fixtures
+                    </a>
+                </div>
 
+            </div>
         </div>
     </div>
 </div>
 
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
 <script>
-    // --- SCORE UPDATING LOGIC ---
-    function addGoal(team) {
-        fetch("{{ route('admin.add_goal', $fixture->id) }}", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({ team: team })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Update UI with new values returned from controller
-            document.getElementById('home-score-display').innerText = data.home_score;
-            document.getElementById('away-score-display').innerText = data.away_score;
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
-    // --- TIMER LOGIC ---
     @if($fixture->status === 'live' && $fixture->started_at)
         const startTime = new Date("{{ \Carbon\Carbon::parse($fixture->started_at)->toIso8601String() }}").getTime();
         
-        setInterval(function() {
+        const clockInterval = setInterval(function() {
             const now = new Date().getTime();
             const distance = now - startTime;
+            
+            if (distance < 0) {
+                document.getElementById("live-timer").innerHTML = "00:00";
+                return;
+            }
             
             const minutes = Math.floor(distance / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
             
-            document.getElementById("live-timer").innerHTML = 
-                (minutes < 10 ? "0" : "") + minutes + ":" + 
-                (seconds < 10 ? "0" : "") + seconds;
+            const timerContainer = document.getElementById("live-timer");
+            if(timerContainer) {
+                timerContainer.innerHTML = 
+                    (minutes < 10 ? "0" : "") + minutes + ":" + 
+                    (seconds < 10 ? "0" : "") + seconds;
+            }
         }, 1000);
-    @else
-        console.log("Timer not started: Status is not live or started_at is missing.");
     @endif
 </script>
 
 <style>
-    .timer-blink { animation: blinker 2s linear infinite; }
-    @keyframes blinker { 50% { opacity: 0.8; } }
+    /* --- LIVESCORE LAYOUT STYLES --- */
+    
+    .match-arena-wrapper {
+        background-color: #f8fafc;
+        min-height: calc(100vh - 80px);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .timeline-header {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #64748b;
+        font-weight: 700;
+    }
+
+    /* Main Card Container */
+    .livescore-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        padding: 16px 20px;
+        
+        /* INCREASED WIDTH HERE */
+        max-width: 700px; 
+        width: 100%;
+        
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    /* Left Status Column */
+    .livescore-status {
+        width: 60px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .status-top {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .status-bottom {
+        font-size: 1rem;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .live-pulse {
+        animation: opacity-pulse 1.5s infinite;
+    }
+
+    @keyframes opacity-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    /* Vertical Divider */
+    .livescore-divider {
+        width: 1px;
+        background-color: #e2e8f0;
+        align-self: stretch;
+        margin: 0 20px;
+    }
+
+    /* Middle Teams Column */
+    .livescore-details {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 0;
+    }
+
+    .team-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .team-logo {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 1.1rem;
+    }
+
+    .team-name {
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: #0f172a;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 15px;
+    }
+
+    .team-score {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f172a;
+        min-width: 25px;
+        text-align: right;
+    }
+
+    /* Right Action/Star Column */
+    .livescore-action {
+        margin-left: 16px;
+        color: #94a3b8;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: color 0.2s ease;
+        display: flex;
+        align-items: center;
+    }
+
+    .livescore-action:hover {
+        color: #f59e0b;
+    }
+
+    /* Return Button */
+    .action-btn {
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        padding: 0.6rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+        background-color: #f1f5f9;
+        color: #0f172a;
+        border-color: #94a3b8;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 576px) {
+        .livescore-card { padding: 12px 16px; }
+        .livescore-divider { margin: 0 16px; }
+        .team-name { font-size: 1rem; }
+    }
 </style>
 @endsection

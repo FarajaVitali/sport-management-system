@@ -12,14 +12,28 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container-fluid px-4">
             <a class="navbar-brand fw-bold" href="#">Sports Portal</a>
-            <button class="navbar-expand-lg navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <!-- Cleaned up button classes -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('admin.dashboard') }}">Dashboard</a>
-                    </li>
+                    
+                    <!-- DYNAMIC DASHBOARD LINK -->
+                    @auth
+                        <li class="nav-item">
+                            @if(auth()->user()->role === 'admin')
+                                <a class="nav-link" href="{{ route('admin.dashboard') }}">Dashboard</a>
+                            @elseif(auth()->user()->role === 'player')
+                                <a class="nav-link" href="{{ route('player.player_dashboard') }}">Dashboard</a>
+                            @elseif(auth()->user()->role === 'coach')
+                                <a class="nav-link" href="{{ route('coach.dashboard') }}">Dashboard</a>
+                            @elseif(auth()->user()->role === 'referee')
+                                <a class="nav-link" href="{{ route('referee.dashboard') }}">Dashboard</a>
+                            @endif
+                        </li>
+                    @endauth
+
                     <li class="nav-item ms-3">
                         <form action="{{ route('logout') }}" method="POST" class="m-0">
                             @csrf

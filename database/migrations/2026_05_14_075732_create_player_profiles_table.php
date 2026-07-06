@@ -19,8 +19,6 @@ return new class extends Migration
         $table->foreignId('college_id')->nullable()->constrained()->onDelete('cascade');
         
         $table->string('team');
-        $table->integer('jersey_number');
-        $table->string('position');
         $table->timestamps();
     });
 }

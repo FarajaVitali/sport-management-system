@@ -210,13 +210,13 @@
                 <div class="card-sub">Colleges & Teams</div>
             </a>
 
-            <a href="#" class="dash-card c-rules">
+            <a href="{{ route('admin.rules')}}" class="dash-card c-rules">
                 <div class="card-icon-wrap icon-rules"><i class="bi bi-journal-text"></i></div>
                 <div class="card-label">Tournament Rules</div>
                 <div class="card-sub">Guidelines & Policies</div>
             </a>
 
-            <a href="{{ route('admin.fixtures') }}" class="dash-card c-live">
+            <a href="{{ route('admin.view_fixtures') }}" class="dash-card c-live">
                 <div class="card-icon-wrap icon-live"><i class="bi bi-broadcast"></i></div>
                 <div class="card-label">Live Match Control</div>
                 <div class="card-sub">Scores & Timers</div>

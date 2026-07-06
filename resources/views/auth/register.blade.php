@@ -17,7 +17,8 @@
             backdrop-filter: blur(10px);
             background-color: rgba(255, 255, 255, 0.95);
         }
-        .form-control:focus, .form-check-input:focus {
+        /* Enhanced focus state to include the new select dropdown */
+        .form-control:focus, .form-select:focus {
             border-color: #0d6efd;
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
         }
@@ -93,21 +94,18 @@
                         </div>
                     </div>
 
+                    <!-- Clean Input-Group Dropdown Design -->
                     <div class="mb-3">
-                        <label class="form-label d-block text-dark small fw-bold mb-2">Account Role Type</label>
-                        <div class="d-flex gap-4">
-                            <div class="form-check">
-                                <input class="form-check-input ms-0 me-2" type="radio" name="role" value="coach" id="roleCoach" required>
-                                <label class="form-check-label fw-medium text-secondary small" for="roleCoach">
-                                 Coach
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input ms-0 me-2" type="radio" name="role" value="player" id="rolePlayer" required>
-                                <label class="form-check-label fw-medium text-secondary small" for="rolePlayer">
-                                Player
-                                </label>
-                            </div>
+                        <label class="form-label text-secondary small fw-semibold">Account Role Type</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-person-badge"></i></span>
+                            <select class="form-select bg-light border-start-0 text-secondary small" name="role" required>
+                                <option value="" disabled {{ old('role') ? '' : 'selected' }}>Select Account Type</option>
+                                <option value="fan" {{ old('role') == 'fan' ? 'selected' : '' }}>Fan/Supporter</option>
+                                <option value="player" {{ old('role') == 'player' ? 'selected' : '' }}>Player</option>
+                                <option value="coach" {{ old('role') == 'coach' ? 'selected' : '' }}>Coach</option>
+                                <option value="referee" {{ old('role') == 'referee' ? 'selected' : '' }}>Referee</option>
+                            </select>
                         </div>
                     </div>
 

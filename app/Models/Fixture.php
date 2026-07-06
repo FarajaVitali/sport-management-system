@@ -8,16 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Fixture extends Model
 {
     protected $fillable = [
-        'home_team_id', 
-        'away_team_id', 
-        'round_number', 
-        'match_date', 
-        'venue', 
-        'status', 
-        'home_score', 
-        'away_score', 
-        'started_at', 
-    ];
+    'home_team_id', 
+    'away_team_id', 
+    'match_date', 
+    'venue', 
+    'status', 
+    'home_score', 
+    'away_score',
+    'round_number',
+    'referee_id'
+];
 
     // Add this to handle the date/time correctly
     protected $casts = [
@@ -34,4 +34,12 @@ class Fixture extends Model
     {
         return $this->belongsTo(Team::class, 'away_team_id');
     }
+
+    public function referee()
+    {
+        return $this->belongsTo(User::class, 'referee_id');
+    }
+
+    
+    
 }

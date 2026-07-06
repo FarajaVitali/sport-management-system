@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Team;    
 use App\Models\College; 
-use App\Models\Fixture; // Changed from MatchFixture to match your actual model file
+use App\Models\Fixture; 
 use App\Models\CoachProfile;
 use App\Models\PlayerProfile;
 use Illuminate\Http\Request;
@@ -61,18 +62,31 @@ class CoachController extends Controller
     /**
      * View all players belonging to the coach's team.
      */
-    public function viewPlayers(): View
+    public function viewPlayers()
     {
-        $coach = Auth::user()->coachProfile;
+        // 1. Get the currently logged-in coach
+        $coach = Auth::user();
         
-        // Fetch players assigned to the exact same team as the coach using the relationship layer
-        $players = PlayerProfile::with('user')
-            ->whereHas('team', function ($query) use ($coach) {
-                $query->where('id', $coach->team_id);
-            })
-            ->get();
+        // 2. Initialize variables so they are never undefined
+        $team = null;
+        $players = collect(); // Returns an empty Laravel collection by default
 
-        return view('coach.team_players', compact('players'));
+        // 3. Check if the coach has a profile and an assigned team
+        if ($coach->coachProfile && $coach->coachProfile->team) {
+            
+            $team = $coach->coachProfile->team;
+            
+            // 4. Fetch all players assigned to this specific team
+            $players = User::where('role', 'player')
+                ->whereHas('playerProfile', function($query) use ($team) {
+                    $query->where('team', $team->name); 
+                })
+                ->with('playerProfile')
+                ->get();
+        }
+
+        // 5. Pass BOTH variables to your new view
+        return view('coach.team_players', compact('team', 'players'));
     }
 
     /**
@@ -125,7 +139,7 @@ class CoachController extends Controller
         ]);
 
         $user->fname = $request->fname;
-        $user->lname = $user->lname;
+        $user->lname = $request->lname; // Fixed: was $user->lname
         $user->email = $request->email;
 
         if ($request->filled('password')) {
@@ -137,5 +151,36 @@ class CoachController extends Controller
         return redirect()
             ->route('coach.dashboard')
             ->with('success', 'Profile configuration settings updated successfully!');
+    }
+
+    /**
+     * Update a player's tactical position, stats, and physical status.
+     */
+    public function updatePlayerTactics(Request $request, $id)
+    {
+        $request->validate([
+            'position' => 'required|string|max:50',
+            'jersey_number' => 'nullable|integer|min:1|max:99',
+            'physical_status' => 'required|in:Fit,Injured,Benched,Suspended',
+            'goals' => 'required|integer|min:0',
+            'assists' => 'required|integer|min:0',
+            'yellow_cards' => 'required|integer|min:0',
+            'red_cards' => 'required|integer|min:0',
+        ]);
+
+        // Using the imported PlayerProfile model
+        $profile = PlayerProfile::where('user_id', $id)->firstOrFail();
+
+        $profile->update([
+            'position' => $request->position,
+            'jersey_number' => $request->jersey_number,
+            'physical_status' => $request->physical_status,
+            'goals' => $request->goals,
+            'assists' => $request->assists,
+            'yellow_cards' => $request->yellow_cards,
+            'red_cards' => $request->red_cards,
+        ]);
+
+        return redirect()->back()->with('success', 'Player profile and statistics updated successfully.');
     }
 }

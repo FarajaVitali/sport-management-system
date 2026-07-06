@@ -11,13 +11,9 @@ class PlayerProfile extends Model
      * The attributes that are mass assignable.
      * Crucial: Includes college_id so it saves when the form is submitted!
      */
-    protected $fillable = [
-        'user_id', 
-        'college_id', 
-        'team', // Your team column is named 'team' in the database!
-        'jersey_number', 
-        'position'
-    ];
+   protected $fillable = [
+    'user_id', 'college_id','team',
+];
 
     /**
      * Link the profile back to the User account.

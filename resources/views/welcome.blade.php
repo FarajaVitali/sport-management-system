@@ -338,6 +338,7 @@
                 <a href="#" class="active">Home</a>
                 <a href="#features-section">Features</a>
                 <a href="#roles-section">Roles</a>
+                <a href="{{route('rules.index')}}">Rules</a>
                 <a href="{{ route('login') }}">Login</a>
                 <a href="{{ route('register.form') }}" class="nav-btn">Register</a>
             </nav>
@@ -350,8 +351,7 @@
                 <h2>Take Absolute Control of Your Sports Data</h2>
                 <p>Streamline your sports organization smoothly—from automatic player registrations directly to real-time league matches and dashboard configurations.</p>
                 <div class="hero-actions">
-                    <a href="#registration-login" class="btn btn-primary">Get Started <i class="fa-solid fa-arrow-right"></i></a>
-                    <a href="#features-section" class="btn btn-secondary">Learn More</a>
+                    <a href="{{ route('register.form') }}" class="btn btn-primary">Get Started <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
             </div>
             <div class="hero-graphic">
@@ -392,55 +392,6 @@
             </div>
         </div>
     </section>
-
-    <section class="user-roles" id="roles-section">
-        <div class="container">
-            <h2 class="section-title">Tailored Multi-Role Interfaces</h2>
-            <p class="section-subtitle">Our three-sided workspace adapts specifically to match the permissions required for each user group.</p>
-            
-            <div class="role-grid">
-                <div class="role-item">
-                    <h4><i class="fa-solid fa-running"></i> Players</h4>
-                    <ul>
-                        <li><i class="fa-solid fa-circle-check"></i> Register & Manage Profile</li>
-                        <li><i class="fa-solid fa-circle-check"></i> View Schedules & Matchups</li>
-                        <li><i class="fa-solid fa-circle-check"></i> Monitor Career Statistics</li>
-                        <li><i class="fa-solid fa-circle-check"></i> Access Official Rules</li>
-                    </ul>
-                </div>
-                <div class="role-item">
-                    <h4><i class="fa-solid fa-clipboard-user"></i> Coaches</h4>
-                    <ul>
-                        <li><i class="fa-solid fa-circle-check"></i> Team Roster Placement</li>
-                        <li><i class="fa-solid fa-circle-check"></i> Track Player Performance</li>
-                        <li><i class="fa-solid fa-circle-check"></i> Plan Strategic Matches</li>
-                        <li><i class="fa-solid fa-circle-check"></i> Direct Communication Channels</li>
-                    </ul>
-                </div>
-                <div class="role-item">
-                    <h4><i class="fa-solid fa-user-shield"></i> Admins</h4>
-                    <ul>
-                        <li><i class="fa-solid fa-circle-check"></i> Establish Custom Leagues</li>
-                        <li><i class="fa-solid fa-circle-check"></i> Automated Match Generation</li>
-                        <li><i class="fa-solid fa-circle-check"></i> System Auditing & Reports</li>
-                        <li><i class="fa-solid fa-circle-check"></i> Total Account Management</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="registration-login">
-        <div class="container">
-            <h2>Ready to Organize Your Sport?</h2>
-            <p>Join thousands of active sport coordinators, players, and operational managers globally.</p>
-            <div style="display: flex; justify-content: center; gap: 16px;">
-                <a href="{{ route('register.form') }}" class="btn btn-primary" style="background-color: var(--accent); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);">Register Now</a>
-                <a href="{{ route('login') }}" class="btn btn-secondary" style="background-color: #1e293b; color: white; border-color: #334155;">Log In to Account</a>
-            </div>
-        </div>
-    </section>
-
     <footer>
         <div class="container">
             <p>&copy; 2026 Sport Management System. Engineered for peak athletic workflow.</p>

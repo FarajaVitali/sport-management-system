@@ -156,8 +156,8 @@
         .c-logout    { --c-accent:#dc2626; }
 
         .icon-profile   { background: #eff6ff; color: #2563eb; }
-        .icon-schedule  { background: #ecfdf5; color: #059669; }
         .icon-standings { background: #ecfeff; color: #0891b2; }
+        .icon-schedule  { background: #ecfdf5; color: #059669; }
         .icon-rules     { background: #fffbeb; color: #d97706; }
         .icon-settings  { background: #f5f3ff; color: #7c3aed; }
         .icon-logout    { background: #fef2f2; color: #dc2626; }
@@ -209,13 +209,13 @@
                 <div class="card-sub">Match Dates</div>
             </a>
 
-            <a href="#" class="dash-card c-standings">
-                <div class="card-icon-wrap icon-standings"><i class="bi bi-bar-chart-line"></i></div>
-                <div class="card-label">Standings</div>
-                <div class="card-sub">Rankings</div>
-            </a>
+        <a href="{{ route('player.standings') }}" class="dash-card c-standings">
+            <div class="card-icon-wrap icon-standings"><i class="bi bi-shield-shaded"></i></div>
+            <div class="card-label">Standings & Results</div>
+            <div class="card-sub">Tables & Scores</div>
+        </a>
 
-           <a href="{{ route('player.rules.view') }}" class="dash-card c-rules">
+           <a href="{{ route('rules.index') }}" class="dash-card c-rules">
                 <div class="card-icon-wrap icon-rules"><i class="bi bi-journal-text"></i></div>
                 <div class="card-label">Rules</div>
                 <div class="card-sub">Guidelines</div>
@@ -239,7 +239,7 @@
         </div>
     </div>
 
-    <div class="portal-footer">© 2025 Shimivuta Sports · Sports Management Excellence</div>
+    <div class="portal-footer">© 2026 Shimivuta Sports · Sports Management Excellence</div>
 
 </div>
 
