@@ -10,6 +10,7 @@ use App\Http\Controllers\RefereeController;
 use App\Http\Controllers\Admin\RuleController;
 use App\Http\Controllers\PublicRuleController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\PublicFixtureController;
 
 // --- Public Routes (Guests only) ---
 Route::get('/', function () {
@@ -59,6 +60,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/fixtures', [ManagementController::class, 'viewFixtures'])->name('view_fixtures');
         Route::get('/live-control/{id}', [ManagementController::class, 'showLivePanel'])->name('live_match_panel');
         Route::post('/fixtures/{id}/add-goal', [ManagementController::class, 'addGoal'])->name('add_goal');
+        Route::get('/admin/coaches', [ManagementController::class, 'viewCoaches'])->name('coaches');
     });
 
     // --- Coach Specific Portal Cluster ---
@@ -124,3 +126,6 @@ Route::match(['get', 'post'], '/referee/fixtures/{id}/start', [RefereeController
    
 });
 Route::get('/rules', [PublicRuleController::class, 'index'])->name('rules.index');
+Route::get('/rules', [PublicRuleController::class, 'index'])->name('rules.index');
+Route::get('/fixtures', [PublicFixtureController::class, 'index'])->name('fixtures.public');
+Route::get('/standings', [GeneralController::class, 'showStandings'])->name('standings.public');

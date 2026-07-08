@@ -338,7 +338,9 @@
                 <a href="#" class="active">Home</a>
                 <a href="#features-section">Features</a>
                 <a href="#roles-section">Roles</a>
-                <a href="{{route('rules.index')}}">Rules</a>
+                <a href="{{ route('rules.index') }}">Rules</a>
+                <a href="{{ route('fixtures.public') }}">Fixtures</a>
+                <a href="{{ route('standings.public') }}">Standings</a>
                 <a href="{{ route('login') }}">Login</a>
                 <a href="{{ route('register.form') }}" class="nav-btn">Register</a>
             </nav>

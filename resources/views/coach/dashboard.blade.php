@@ -97,7 +97,7 @@
         </div>
 
         <div class="col-md-6 col-lg-4">
-            <a href="#" class="card dashboard-card rounded-4 p-4">
+            <a href="{{ route('rules.index') }}" class="card dashboard-card rounded-4 p-4">
                 <div class="icon-shape bg-secondary-subtle text-dark border border-secondary-subtle">
                     <i class="bi bi-book-half"></i>
                 </div>
