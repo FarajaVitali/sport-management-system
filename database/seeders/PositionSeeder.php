@@ -9,19 +9,18 @@ class PositionSeeder extends Seeder
 {
     public function run()
     {
-        // Define your sports and positions
         $data = [
-            'Football' => ['Goalkeeper', 'Defender', 'Midfielder', 'Striker'],
+            'Football'   => ['Goalkeeper', 'Defender', 'Midfielder', 'Striker'],
             'Basketball' => ['Point Guard', 'Shooting Guard', 'Small Forward', 'Power Forward', 'Center'],
             'Volleyball' => ['Setter', 'Libero', 'Middle Blocker', 'Outside Hitter'],
+            'Netball'    => ['Goal Shooter', 'Goal Attack', 'Wing Attack', 'Centre', 'Wing Defence', 'Goal Defence', 'Goal Keeper'],
         ];
 
         foreach ($data as $sport => $positions) {
             foreach ($positions as $position) {
-                DB::table('positions')->insert([
-                    'sport_name' => $sport, // Ensure your table has this column
-                    'name' => $position,
-                ]);
+                DB::table('positions')->updateOrInsert(
+                    ['sport_name' => $sport, 'name' => $position]
+                );
             }
         }
     }

@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Position;
+
 
 use App\Models\User;
 use App\Models\Team;    
@@ -63,31 +65,32 @@ class CoachController extends Controller
      * View all players belonging to the coach's team.
      */
     public function viewPlayers()
-    {
-        // 1. Get the currently logged-in coach
-        $coach = Auth::user();
-        
-        // 2. Initialize variables so they are never undefined
-        $team = null;
-        $players = collect(); // Returns an empty Laravel collection by default
+{
+    $coach = Auth::user();
 
-        // 3. Check if the coach has a profile and an assigned team
-        if ($coach->coachProfile && $coach->coachProfile->team) {
-            
-            $team = $coach->coachProfile->team;
-            
-            // 4. Fetch all players assigned to this specific team
-            $players = User::where('role', 'player')
-                ->whereHas('playerProfile', function($query) use ($team) {
-                    $query->where('team', $team->name); 
-                })
-                ->with('playerProfile')
-                ->get();
+    $team = null;
+    $players = collect();
+    $positions = collect();
+
+    if ($coach->coachProfile && $coach->coachProfile->team) {
+
+        $team = $coach->coachProfile->team->load('sport');
+
+        $players = User::where('role', 'player')
+            ->whereHas('playerProfile', function ($query) use ($team) {
+                $query->where('team', $team->name);
+            })
+            ->with('playerProfile')
+            ->get();
+
+        if ($team->sport) {
+            $positions = Position::where('sport_name', $team->sport->name)->get();
         }
-
-        // 5. Pass BOTH variables to your new view
-        return view('coach.team_players', compact('team', 'players'));
     }
+
+    return view('coach.team_players', compact('team', 'players', 'positions'));
+}
+
 
     /**
      * View all match schedule fixtures involving the coach's team.

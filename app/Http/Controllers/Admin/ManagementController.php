@@ -136,6 +136,7 @@ class ManagementController extends Controller
         // Change 'admin.live_control' to match your actual Blade view name
         return view('admin.live_match', compact('fixture'));
     }
+    
 
     public function viewCoaches()
     {

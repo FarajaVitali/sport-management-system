@@ -193,12 +193,15 @@
                                                     <div class="col-md-4">
                                                         <label class="form-label small text-muted fw-medium">Position</label>
                                                         <select name="position" class="form-select bg-light" required>
-                                                            @php $pos = $player->playerProfile->position ?? ''; @endphp
-                                                            <option value="Goalkeeper" {{ $pos == 'Goalkeeper' ? 'selected' : '' }}>Goalkeeper</option>
-                                                            <option value="Defender" {{ $pos == 'Defender' ? 'selected' : '' }}>Defender</option>
-                                                            <option value="Midfielder" {{ $pos == 'Midfielder' ? 'selected' : '' }}>Midfielder</option>
-                                                            <option value="Forward" {{ $pos == 'Forward' ? 'selected' : '' }}>Forward</option>
-                                                        </select>
+    @php $pos = $player->playerProfile->position ?? ''; @endphp
+    @forelse($positions as $position)
+        <option value="{{ $position->name }}" {{ $pos == $position->name ? 'selected' : '' }}>
+            {{ $position->name }}
+        </option>
+    @empty
+        <option value="" disabled selected>No positions configured for this sport</option>
+    @endforelse
+</select>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label class="form-label small text-muted fw-medium">Status</label>

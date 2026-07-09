@@ -9,16 +9,20 @@ use Illuminate\Http\Request;
 class GeneralController extends Controller
 {
     public function showStandings()
-    {
-        // Fetch completed fixtures (Results)
-        // Changed 'date' to 'created_at' to prevent the SQL error
-        $results = Fixture::where('status', 'completed')
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+{
+    $sports = Sport::all();
 
-        // Fetch teams ordered by points (Standings)
-        $standings = Team::orderBy('points', 'desc')->get();
-        
-        return view('player.results_standing', compact('results', 'standings'));
-    }
+    $standings = Team::all()->groupBy(['sport_id', 'gender']);
+
+    $results = Fixture::with(['homeTeam', 'awayTeam'])
+        ->where('status', 'completed')
+        ->latest('match_date')
+        ->get()
+        ->groupBy([
+            fn ($fixture) => $fixture->homeTeam->sport_id ?? 0,
+            fn ($fixture) => $fixture->homeTeam->gender ?? 'men',
+        ]);
+
+    return view('player.results_standing', compact('sports', 'standings', 'results'));
+}
 }
