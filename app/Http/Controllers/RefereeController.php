@@ -68,25 +68,27 @@ class RefereeController extends Controller
     return redirect()->back()->with('success', 'Match has been started!');
 }
 
-        public function updateScore(Request $request, $id)
+public function updateScore(Request $request, $id)
 {
     $fixture = \App\Models\Fixture::findOrFail($id);
 
-    // If the user clicked "Start Match"
+    if ($fixture->referee_id !== Auth::id()) {
+        return back()->withErrors(['auth_error' => 'Unauthorized: You are not assigned to officiate this match.']);
+    }
+
     if ($request->action === 'start_match') {
         $fixture->update([
             'is_live' => true,
-            'live_status' => 'First Half'
+            'status' => 'First Half',
         ]);
         return redirect()->back()->with('success', 'Match has been started!');
     }
 
-    // Otherwise, perform the regular score update
     $fixture->update([
-        'home_team_score' => $request->home_team_score,
-        'away_team_score' => $request->away_team_score,
+        'home_score' => $request->home_team_score,
+        'away_score' => $request->away_team_score,
         'is_live' => $request->has('is_live'),
-        'live_status' => $request->live_status,
+        'status' => $request->live_status,
     ]);
 
     return redirect()->back()->with('success', 'Match data updated successfully!');

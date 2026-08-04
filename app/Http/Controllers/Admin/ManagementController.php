@@ -144,4 +144,62 @@ class ManagementController extends Controller
 
         return view('admin.coaches', compact('coaches'));
     }
+    public function endMatch($id)
+{
+    $fixture = \App\Models\Fixture::findOrFail($id);
+    
+    // Prevent double-counting if a referee or admin accidentally clicks "End" twice
+    if ($fixture->status === 'completed') {
+        return redirect()->back()->with('error', 'This match is already completed and points are distributed.');
+    }
+
+    // 1. Mark fixture as completed
+    $fixture->status = 'completed';
+    $fixture->save();
+
+    // 2. Fetch the actual Team models
+    $homeTeam = $fixture->homeTeam;
+    $awayTeam = $fixture->awayTeam;
+
+    if ($homeTeam && $awayTeam) {
+        // 3. Increment Matches Played
+        $homeTeam->played += 1;
+        $awayTeam->played += 1;
+
+        // 4. Update Goals For (GF) and Goals Against (GA)
+        $homeTeam->goals_for += $fixture->home_score;
+        $homeTeam->goals_against += $fixture->away_score;
+        
+        $awayTeam->goals_for += $fixture->away_score;
+        $awayTeam->goals_against += $fixture->home_score;
+
+        // 5. Distribute Points and Win/Loss/Draw Stats
+        if ($fixture->home_score > $fixture->away_score) {
+            // Home Team Wins
+            $homeTeam->won += 1;
+            $homeTeam->points += 3;
+            
+            $awayTeam->lost += 1;
+        } elseif ($fixture->home_score < $fixture->away_score) {
+            // Away Team Wins
+            $awayTeam->won += 1;
+            $awayTeam->points += 3;
+            
+            $homeTeam->lost += 1;
+        } else {
+            // Match is a Draw
+            $homeTeam->drawn += 1;
+            $homeTeam->points += 1;
+            
+            $awayTeam->drawn += 1;
+            $awayTeam->points += 1;
+        }
+
+        // 6. Save the updated team statistics to the database
+        $homeTeam->save();
+        $awayTeam->save();
+    }
+
+    return redirect()->back()->with('success', 'Match finished! Points and standings updated.');
+}
 }

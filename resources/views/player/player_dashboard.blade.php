@@ -209,11 +209,11 @@
                 <div class="card-sub">Match Dates</div>
             </a>
 
-        <a href="{{ route('player.standings') }}" class="dash-card c-standings">
-            <div class="card-icon-wrap icon-standings"><i class="bi bi-shield-shaded"></i></div>
-            <div class="card-label">Standings & Results</div>
-            <div class="card-sub">Tables & Scores</div>
-        </a>
+       <a href="{{ route('standings.public') }}" class="dash-card c-standings">
+    <div class="card-icon-wrap icon-standings"><i class="bi bi-shield-shaded"></i></div>
+    <div class="card-label">Standings & Results</div>
+    <div class="card-sub">Tables & Scores</div>
+</a>
 
            <a href="{{ route('rules.index') }}" class="dash-card c-rules">
                 <div class="card-icon-wrap icon-rules"><i class="bi bi-journal-text"></i></div>
